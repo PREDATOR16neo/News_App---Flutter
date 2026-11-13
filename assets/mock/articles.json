@@ -1,0 +1,32 @@
+{
+  "status": "ok",
+  "totalResults": 2,
+  "articles": [
+    {
+      "source": {
+        "id": "contoh-berita",
+        "name": "Kabar Nusantara"
+      },
+      "author": "Redaksi",
+      "title": "Inovasi teknologi lokal terus berkembang",
+      "description": "Pelaku teknologi lokal memperkenalkan sejumlah inovasi baru.",
+      "url": "https://example.com/teknologi-lokal",
+      "urlToImage": "https://example.com/images/teknologi.jpg",
+      "publishedAt": "2026-11-13T02:00:00Z",
+      "content": "Berbagai inovasi teknologi dikembangkan oleh pelaku lokal."
+    },
+    {
+      "source": {
+        "id": null,
+        "name": null
+      },
+      "author": null,
+      "title": "Informasi dengan beberapa data kosong",
+      "description": null,
+      "url": null,
+      "urlToImage": null,
+      "publishedAt": null,
+      "content": null
+    }
+  ]
+}
