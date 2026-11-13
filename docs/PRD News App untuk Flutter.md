@@ -29,12 +29,12 @@ Setelah menyelesaikan proyek ini, kami mampu:
 Keempat tujuan ini dicapai dalam dua tahap. PRD ini mengerjakan tahap
 front end; tahap integrasi API dikerjakan oleh kami sendiri.
 
-| LO | Tahap front end (PRD ini) | Tahap integrasi API (Kami sendiri) |
-|----|----|----|
-| 1\. Network call | Belum dikerjakan; disiapkan kelas abstrak NewsService sebagai titik sambung | kami menulis panggilan http ke NewsAPI.org |
-| 2\. Asynchronous | Data contoh dimuat lewat Future dengan jeda buatan | Jeda buatan diganti panggilan jaringan sungguhan |
+| LO                 | Tahap front end (PRD ini)                                                                  | Tahap integrasi API (Kami sendiri)                                 |
+| ------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| 1\. Network call   | Belum dikerjakan; disiapkan kelas abstrak NewsService sebagai titik sambung                | kami menulis panggilan http ke NewsAPI.org                         |
+| 2\. Asynchronous   | Data contoh dimuat lewat Future dengan jeda buatan                                         | Jeda buatan diganti panggilan jaringan sungguhan                   |
 | 3\. State jaringan | UI loading, sukses, error, dan kosong sudah jadi dan bisa dipaksa muncul lewat data contoh | Dihubungkan ke hasil nyata: tanpa internet, key salah, kuota habis |
-| 4\. Parsing JSON | Article.fromJson diuji dengan file JSON contoh berformat NewsAPI.org | Parsing respons asli, termasuk field yang kosong |
+| 4\. Parsing JSON   | Article.fromJson diuji dengan file JSON contoh berformat NewsAPI.org                       | Parsing respons asli, termasuk field yang kosong                   |
 
 ## Pengguna sasaran
 
@@ -51,14 +51,14 @@ berita terbaru, membuka detailnya, dan menyimpan artikel yang menarik.
 Enam fitur wajib ada. Semuanya berjalan dengan data contoh dan tersusun
 di tiga layar: Beranda, Detail, dan Favorit.
 
-| No | Fitur | Deskripsi | Layar |
-|----|----|----|----|
-| 1 | Daftar berita | List kartu berisi gambar, judul, nama sumber, dan waktu terbit; tarik ke bawah untuk memuat ulang | Beranda |
-| 2 | State tampilan | Indikator loading, pesan error dengan tombol coba lagi, dan tampilan hasil kosong | Beranda, Favorit |
-| 3 | Detail artikel | Gambar, judul, penulis, sumber, tanggal, deskripsi, dan tombol Baca selengkapnya (aksi membuka tautan dipasang di tahap integrasi) | Detail |
-| 4 | Bookmark/favorit | Tandai atau lepas tanda dari daftar dan detail; semua artikel yang ditandai tampil di halaman Favorit | Beranda, Detail, Favorit |
-| 5 | Pencarian dan kategori | Kolom cari dan chip kategori (bisnis, olahraga, teknologi, dan sejenisnya) yang menyaring data contoh | Beranda |
-| 6 | Simulasi state | Pengaturan di MockNewsService untuk memaksa hasil sukses, error, atau kosong dan mengatur lama jeda; dipakai pengembang, bukan pengguna | Kode |
+| No  | Fitur                  | Deskripsi                                                                                                                               | Layar                    |
+| --- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| 1   | Daftar berita          | List kartu berisi gambar, judul, nama sumber, dan waktu terbit; tarik ke bawah untuk memuat ulang                                       | Beranda                  |
+| 2   | State tampilan         | Indikator loading, pesan error dengan tombol coba lagi, dan tampilan hasil kosong                                                       | Beranda, Favorit         |
+| 3   | Detail artikel         | Gambar, judul, penulis, sumber, tanggal, deskripsi, dan tombol Baca selengkapnya (aksi membuka tautan dipasang di tahap integrasi)      | Detail                   |
+| 4   | Bookmark/favorit       | Tandai atau lepas tanda dari daftar dan detail; semua artikel yang ditandai tampil di halaman Favorit                                   | Beranda, Detail, Favorit |
+| 5   | Pencarian dan kategori | Kolom cari dan chip kategori (bisnis, olahraga, teknologi, dan sejenisnya) yang menyaring data contoh                                   | Beranda                  |
+| 6   | Simulasi state         | Pengaturan di MockNewsService untuk memaksa hasil sukses, error, atau kosong dan mengatur lama jeda; dipakai pengembang, bukan pengguna | Kode                     |
 
 Bookmark disimpan di memori lewat Provider. Daftar favorit hilang saat
 aplikasi ditutup, dan itu disengaja pada versi 1.
@@ -129,24 +129,24 @@ Selama tahap front end, data berasal dari file JSON contoh. Titik
 sambung ke API sungguhan disiapkan sekarang supaya kami bisa memasangnya
 nanti tanpa mengubah UI.
 
-| Hal | Rencana |
-|----|----|
-| Data contoh | assets/mock/articles.json berformat sama dengan respons NewsAPI.org, dimuat lewat MockNewsService dengan jeda buatan 1-2 detik |
-| Titik sambung | Kelas abstrak NewsService dengan metode fetchArticles yang mengembalikan Future\<List\<Article\>\>. MockNewsService dibuat sekarang; ApiNewsService dibuat siswa pada tahap integrasi |
-| Simulasi state | Satu pengaturan di MockNewsService untuk memaksa hasil sukses, error, atau kosong |
-| Sumber data nyata | NewsAPI.org dengan API key pribadi tiap pelajar |
-| Endpoint (cek dokumentasi) | GET https://newsapi.org/v2/top-headlines dengan parameter seperti country, category, q, page, dan pageSize; key dikirim lewat header X-Api-Key |
-| Bentuk respons | Objek JSON dengan status, totalResults, dan list articles |
-| Model Dart | Article dengan sourceName, author, title, description, url, urlToImage, publishedAt, content; semua field dianggap boleh kosong kecuali title |
+| Hal                        | Rencana                                                                                                                                                                               |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Data contoh                | assets/mock/articles.json berformat sama dengan respons NewsAPI.org, dimuat lewat MockNewsService dengan jeda buatan 1-2 detik                                                        |
+| Titik sambung              | Kelas abstrak NewsService dengan metode fetchArticles yang mengembalikan Future\<List\<Article\>\>. MockNewsService dibuat sekarang; ApiNewsService dibuat siswa pada tahap integrasi |
+| Simulasi state             | Satu pengaturan di MockNewsService untuk memaksa hasil sukses, error, atau kosong                                                                                                     |
+| Sumber data nyata          | NewsAPI.org dengan API key pribadi tiap pelajar                                                                                                                                       |
+| Endpoint (cek dokumentasi) | GET https://newsapi.org/v2/top-headlines dengan parameter seperti country, category, q, page, dan pageSize; key dikirim lewat header X-Api-Key                                        |
+| Bentuk respons             | Objek JSON dengan status, totalResults, dan list articles                                                                                                                             |
+| Model Dart                 | Article dengan sourceName, author, title, description, url, urlToImage, publishedAt, content; semua field dianggap boleh kosong kecuali title                                         |
 
 ## Tech stack dan struktur proyek
 
-| Komponen | Fungsi |
-|----|----|
-| Dart dan Flutter SDK | Bahasa dan framework UI |
-| Package http | Memanggil REST API; dipakai pada tahap integrasi API, belum pada tahap front end |
-| Provider | State management untuk daftar berita, status jaringan, dan bookmark |
-| Git dan GitHub | Version control; siswa commit per fitur dan mengumpulkan lewat repository |
+| Komponen             | Fungsi                                                                           |
+| -------------------- | -------------------------------------------------------------------------------- |
+| Dart dan Flutter SDK | Bahasa dan framework UI                                                          |
+| Package http         | Memanggil REST API; dipakai pada tahap integrasi API, belum pada tahap front end |
+| Provider             | State management untuk daftar berita, status jaringan, dan bookmark              |
+| Git dan GitHub       | Version control; siswa commit per fitur dan mengumpulkan lewat repository        |
 
 Struktur folder yang disarankan memisahkan tugas setiap bagian:
 
@@ -168,22 +168,22 @@ assets/mock/ articles.json
 Tahap front end dianggap selesai bila semua poin berikut terpenuhi:
 
 - [ ] Layar Beranda, Detail, dan Favorit berjalan dengan data contoh
-  tanpa crash.
+      tanpa crash.
 
 - [ ] Tiga state (loading, error dengan tombol coba lagi, hasil kosong)
-  bisa ditampilkan hanya dengan mengubah pengaturan di MockNewsService.
+      bisa ditampilkan hanya dengan mengubah pengaturan di MockNewsService.
 
 - [ ] Artikel dengan gambar, deskripsi, atau penulis kosong tetap tampil
-  rapi.
+      rapi.
 
 - [ ] Bookmark bisa ditambah dan dihapus, dan tampil konsisten di
-  Beranda, Detail, dan Favorit.
+      Beranda, Detail, dan Favorit.
 
 - [ ] Article.fromJson lolos uji dengan file JSON contoh berformat
-  NewsAPI.org.
+      NewsAPI.org.
 
 - [ ] UI hanya bergantung pada NewsService, tidak langsung pada data
-  contoh.
+      contoh.
 
 - [ ] Kode ada di GitHub dengan riwayat commit yang jelas.
 
