@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/news_provider.dart';
+import 'detail_screen.dart';
 import '../theme/app_theme.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -120,6 +121,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
           return Card(
             child: ListTile(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => DetailScreen(article: article),
+                  ),
+                );
+              },
               title: Text(
                 article.title,
                 style: Theme.of(context).textTheme.titleLarge,
