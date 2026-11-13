@@ -1,30 +1,55 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
-
 import 'package:news_app/main.dart';
+import 'package:news_app/services/mock_news_service.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('menampilkan loading lalu daftar berita', (tester) async {
+    await tester.pumpWidget(
+      MyApp(newsService: MockNewsService(delay: const Duration(seconds: 1))),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('Memuat berita...'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Berita terbaru'), findsOneWidget);
+    expect(
+      find.text('Inovasi teknologi lokal terus berkembang'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('menampilkan pesan error dan tombol coba lagi', (tester) async {
+    await tester.pumpWidget(
+      MyApp(
+        newsService: MockNewsService(
+          responseMode: MockResponseMode.error,
+          delay: Duration.zero,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Berita gagal dimuat. Periksa kembali dan coba lagi.'),
+      findsOneWidget,
+    );
+    expect(find.text('Coba lagi'), findsOneWidget);
+  });
+
+  testWidgets('menampilkan hasil kosong dan tombol muat ulang', (tester) async {
+    await tester.pumpWidget(
+      MyApp(
+        newsService: MockNewsService(
+          responseMode: MockResponseMode.empty,
+          delay: Duration.zero,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Belum ada berita untuk ditampilkan.'), findsOneWidget);
+    expect(find.text('Muat ulang'), findsOneWidget);
   });
 }
