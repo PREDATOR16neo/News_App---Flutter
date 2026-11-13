@@ -23,6 +23,33 @@ void main() {
     );
   });
 
+  testWidgets('mencari berita dan memfilter kategori', (tester) async {
+    await tester.pumpWidget(MyApp(newsService: _CategorizedNewsService()));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Bisnis'));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text('Berita pasar lokal'), findsOneWidget);
+    expect(find.text('Berita teknologi'), findsNothing);
+
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Semua'));
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.enterText(find.byType(TextField), 'tenis');
+    await tester.pump();
+    expect(find.text('Turnamen tenis'), findsOneWidget);
+    expect(find.text('Berita pasar lokal'), findsNothing);
+
+    await tester.enterText(find.byType(TextField), 'tidak ada');
+    await tester.pump();
+    await tester.tap(find.text('Hapus filter'));
+    await tester.pump();
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller?.text,
+      '',
+    );
+    expect(find.text('Berita pasar lokal'), findsOneWidget);
+  });
+
   testWidgets('menampilkan pesan error dan tombol coba lagi', (tester) async {
     await tester.pumpWidget(
       MyApp(
@@ -174,4 +201,13 @@ class _SingleArticleNewsService implements NewsService {
 
   @override
   Future<List<Article>> fetchArticles() async => [article];
+}
+
+class _CategorizedNewsService implements NewsService {
+  @override
+  Future<List<Article>> fetchArticles() async => const [
+    Article(title: 'Berita teknologi', category: 'Teknologi'),
+    Article(title: 'Berita pasar lokal', category: 'Bisnis'),
+    Article(title: 'Turnamen tenis', category: 'Olahraga'),
+  ];
 }

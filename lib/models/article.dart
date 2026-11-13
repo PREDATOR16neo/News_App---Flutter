@@ -4,6 +4,7 @@ class Article {
     this.author,
     required this.title,
     this.description,
+    this.category,
     this.url,
     this.urlToImage,
     this.publishedAt,
@@ -14,6 +15,7 @@ class Article {
   final String? author;
   final String title;
   final String? description;
+  final String? category;
   final String? url;
   final String? urlToImage;
   final String? publishedAt;
@@ -42,6 +44,7 @@ class Article {
       author: _readOptionalString(json, 'author'),
       title: title,
       description: _readOptionalString(json, 'description'),
+      category: _readOptionalString(json, 'category'),
       url: _readOptionalString(json, 'url'),
       urlToImage: _readOptionalString(json, 'urlToImage'),
       publishedAt: _readOptionalString(json, 'publishedAt'),

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/bookmark_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/article_card.dart';
 import 'detail_screen.dart';
 
 class BookmarkScreen extends StatelessWidget {
@@ -35,30 +36,19 @@ class BookmarkScreen extends StatelessWidget {
                 const SizedBox(height: AppSpacing.small),
             itemBuilder: (context, index) {
               final article = articles[index];
-              return Card(
-                child: ListTile(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (context) => DetailScreen(article: article),
-                      ),
-                    );
-                  },
-                  title: Text(
-                    article.title,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  subtitle: Text(
-                    '${article.sourceName ?? 'Sumber tidak diketahui'} · '
-                    '${article.publishedAt ?? 'Waktu terbit tidak tersedia'}',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  trailing: IconButton(
-                    tooltip: 'Hapus dari favorit',
-                    onPressed: () => bookmarkProvider.toggleBookmark(article),
-                    icon: const Icon(Icons.bookmark),
-                  ),
-                ),
+              return ArticleCard(
+                article: article,
+                isBookmarked: true,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => DetailScreen(article: article),
+                    ),
+                  );
+                },
+                onBookmarkToggle: () {
+                  bookmarkProvider.toggleBookmark(article);
+                },
               );
             },
           );

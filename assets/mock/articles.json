@@ -1,6 +1,6 @@
 {
   "status": "ok",
-  "totalResults": 2,
+  "totalResults": 4,
   "articles": [
     {
       "source": {
@@ -10,6 +10,7 @@
       "author": "Redaksi",
       "title": "Inovasi teknologi lokal terus berkembang",
       "description": "Pelaku teknologi lokal memperkenalkan sejumlah inovasi baru.",
+      "category": "Teknologi",
       "url": "https://example.com/teknologi-lokal",
       "urlToImage": "https://example.com/images/teknologi.jpg",
       "publishedAt": "2026-11-13T02:00:00Z",
@@ -27,6 +28,34 @@
       "urlToImage": null,
       "publishedAt": null,
       "content": null
+    },
+    {
+      "source": {
+        "id": "contoh-bisnis",
+        "name": "Kabar Ekonomi"
+      },
+      "author": "Tim Bisnis",
+      "title": "Pasar lokal mencatat pertumbuhan positif",
+      "description": "Sejumlah pelaku usaha mencatat peningkatan penjualan.",
+      "category": "Bisnis",
+      "url": "https://example.com/pasar-lokal",
+      "urlToImage": null,
+      "publishedAt": "2026-11-12T08:30:00Z",
+      "content": "Aktivitas pasar lokal menunjukkan perkembangan positif."
+    },
+    {
+      "source": {
+        "id": "contoh-olahraga",
+        "name": "Kabar Olahraga"
+      },
+      "author": "Redaksi Olahraga",
+      "title": "Atlet muda meraih kemenangan di turnamen tenis",
+      "description": "Atlet muda Indonesia tampil gemilang pada turnamen tenis.",
+      "category": "Olahraga",
+      "url": "https://example.com/turnamen-tenis",
+      "urlToImage": null,
+      "publishedAt": "2026-11-11T10:00:00Z",
+      "content": "Kemenangan ini menjadi pencapaian penting bagi atlet muda."
     }
   ]
 }

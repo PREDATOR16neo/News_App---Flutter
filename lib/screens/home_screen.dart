@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/bookmark_provider.dart';
 import '../providers/news_provider.dart';
+import '../widgets/article_card.dart';
 import 'detail_screen.dart';
 import '../theme/app_theme.dart';
 
@@ -16,6 +17,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  static const _categories = ['Semua', 'Teknologi', 'Bisnis', 'Olahraga'];
+
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
+  String _selectedCategory = 'Semua';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -106,54 +119,109 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildArticleList(NewsProvider provider) {
+    final query = _searchQuery.trim().toLowerCase();
+    final articles = provider.articles.where((article) {
+      final matchesCategory =
+          _selectedCategory == 'Semua' ||
+          article.category?.toLowerCase() == _selectedCategory.toLowerCase();
+      final searchableText = [
+        article.title,
+        article.description ?? '',
+        article.sourceName ?? '',
+        article.author ?? '',
+      ].join(' ').toLowerCase();
+      return matchesCategory && searchableText.contains(query);
+    }).toList();
+
     return RefreshIndicator(
       onRefresh: provider.loadArticles,
-      child: ListView.separated(
+      child: ListView(
         padding: const EdgeInsets.all(AppSpacing.medium),
         physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: provider.articles.length,
-        separatorBuilder: (context, index) =>
-            const SizedBox(height: AppSpacing.small),
-        itemBuilder: (context, index) {
-          final article = provider.articles[index];
-          final sourceName = article.sourceName ?? 'Sumber tidak diketahui';
-          final publishedAt =
-              article.publishedAt ?? 'Waktu terbit tidak tersedia';
-          final isBookmarked = context.watch<BookmarkProvider>().isBookmarked(
-            article,
-          );
-
-          return Card(
-            child: ListTile(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) => DetailScreen(article: article),
+        children: [
+          TextField(
+            controller: _searchController,
+            decoration: const InputDecoration(
+              hintText: 'Cari berita',
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(),
+            ),
+            onChanged: (value) => setState(() {
+              _searchQuery = value;
+            }),
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: _categories.map((category) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: AppSpacing.small),
+                  child: ChoiceChip(
+                    label: Text(category),
+                    selected: _selectedCategory == category,
+                    onSelected: (_) => setState(() {
+                      _selectedCategory = category;
+                    }),
                   ),
                 );
-              },
-              title: Text(
-                article.title,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              subtitle: Text(
-                '$sourceName · $publishedAt',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              trailing: IconButton(
-                tooltip: isBookmarked
-                    ? 'Hapus dari favorit'
-                    : 'Tambahkan ke favorit',
-                onPressed: () {
-                  context.read<BookmarkProvider>().toggleBookmark(article);
-                },
-                icon: Icon(
-                  isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                ),
-              ),
+              }).toList(),
             ),
-          );
-        },
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          if (articles.isEmpty)
+            _buildNoMatchingArticlesView(context)
+          else
+            ...articles.map((article) {
+              final isBookmarked = context
+                  .watch<BookmarkProvider>()
+                  .isBookmarked(article);
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.small),
+                child: ArticleCard(
+                  article: article,
+                  isBookmarked: isBookmarked,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (context) => DetailScreen(article: article),
+                      ),
+                    );
+                  },
+                  onBookmarkToggle: () {
+                    context.read<BookmarkProvider>().toggleBookmark(article);
+                  },
+                ),
+              );
+            }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNoMatchingArticlesView(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.large),
+      child: Column(
+        children: [
+          Text(
+            'Berita tidak ditemukan. Coba kata kunci atau kategori lain.',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          TextButton(
+            onPressed: () {
+              _searchController.clear();
+              setState(() {
+                _searchQuery = '';
+                _selectedCategory = 'Semua';
+              });
+            },
+            child: const Text('Hapus filter'),
+          ),
+        ],
       ),
     );
   }

@@ -20,6 +20,7 @@ void main() {
     expect(article.author, 'Redaksi');
     expect(article.title, 'Inovasi teknologi lokal terus berkembang');
     expect(article.description, contains('inovasi baru'));
+    expect(article.category, 'Teknologi');
     expect(article.url, 'https://example.com/teknologi-lokal');
     expect(article.urlToImage, 'https://example.com/images/teknologi.jpg');
     expect(article.publishedAt, '2026-11-13T02:00:00Z');
@@ -37,6 +38,7 @@ void main() {
     expect(article.sourceName, isNull);
     expect(article.author, isNull);
     expect(article.description, isNull);
+    expect(article.category, isNull);
     expect(article.url, isNull);
     expect(article.urlToImage, isNull);
     expect(article.publishedAt, isNull);

@@ -26,3 +26,7 @@ class AppSpacing {
   static const double medium = 16;
   static const double large = 24;
 }
+
+class AppDimensions {
+  static const double articleImageHeight = 180;
+}

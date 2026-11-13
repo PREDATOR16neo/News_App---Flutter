@@ -10,9 +10,13 @@ void main() {
 
     final articles = await service.fetchArticles();
 
-    expect(articles, hasLength(2));
+    expect(articles, hasLength(4));
     expect(articles.first, isA<Article>());
     expect(articles.first.title, 'Inovasi teknologi lokal terus berkembang');
+    expect(
+      articles.map((article) => article.category),
+      containsAll(['Teknologi', 'Bisnis', 'Olahraga']),
+    );
   });
 
   test('menghasilkan daftar kosong saat mode kosong', () async {
