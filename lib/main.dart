@@ -1,7 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
+import 'providers/bookmark_provider.dart';
 import 'providers/news_provider.dart';
+import 'screens/bookmark_screen.dart';
 import 'screens/home_screen.dart';
 import 'services/mock_news_service.dart';
 import 'services/news_service.dart';
@@ -18,12 +20,54 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => NewsProvider(newsService),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => NewsProvider(newsService)),
+        ChangeNotifierProvider(create: (_) => BookmarkProvider()),
+      ],
       child: MaterialApp(
         title: 'News App',
         theme: AppTheme.lightTheme,
-        home: const HomeScreen(),
+        home: const _NewsAppHome(),
+      ),
+    );
+  }
+}
+
+class _NewsAppHome extends StatefulWidget {
+  const _NewsAppHome();
+
+  @override
+  State<_NewsAppHome> createState() => _NewsAppHomeState();
+}
+
+class _NewsAppHomeState extends State<_NewsAppHome> {
+  int _selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    const screens = [HomeScreen(), BookmarkScreen()];
+
+    return Scaffold(
+      body: IndexedStack(index: _selectedIndex, children: screens),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.article_outlined),
+            label: 'Beranda',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.bookmark_border),
+            selectedIcon: Icon(Icons.bookmark),
+            label: 'Favorit',
+          ),
+        ],
       ),
     );
   }

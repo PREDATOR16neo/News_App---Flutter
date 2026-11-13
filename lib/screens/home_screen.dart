@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/bookmark_provider.dart';
 import '../providers/news_provider.dart';
 import 'detail_screen.dart';
 import '../theme/app_theme.dart';
@@ -118,6 +119,9 @@ class _HomeScreenState extends State<HomeScreen> {
           final sourceName = article.sourceName ?? 'Sumber tidak diketahui';
           final publishedAt =
               article.publishedAt ?? 'Waktu terbit tidak tersedia';
+          final isBookmarked = context.watch<BookmarkProvider>().isBookmarked(
+            article,
+          );
 
           return Card(
             child: ListTile(
@@ -135,6 +139,17 @@ class _HomeScreenState extends State<HomeScreen> {
               subtitle: Text(
                 '$sourceName · $publishedAt',
                 style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              trailing: IconButton(
+                tooltip: isBookmarked
+                    ? 'Hapus dari favorit'
+                    : 'Tambahkan ke favorit',
+                onPressed: () {
+                  context.read<BookmarkProvider>().toggleBookmark(article);
+                },
+                icon: Icon(
+                  isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                ),
               ),
             ),
           );

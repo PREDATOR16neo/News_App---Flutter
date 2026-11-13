@@ -1,6 +1,8 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:provider/provider.dart';
 
 import '../models/article.dart';
+import '../providers/bookmark_provider.dart';
 import '../theme/app_theme.dart';
 
 class DetailScreen extends StatelessWidget {
@@ -10,6 +12,9 @@ class DetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bookmarkProvider = context.watch<BookmarkProvider>();
+    final isBookmarked = bookmarkProvider.isBookmarked(article);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Detail berita')),
       body: ListView(
@@ -39,6 +44,16 @@ class DetailScreen extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: AppSpacing.large),
+          OutlinedButton.icon(
+            onPressed: () {
+              context.read<BookmarkProvider>().toggleBookmark(article);
+            },
+            icon: Icon(isBookmarked ? Icons.bookmark : Icons.bookmark_border),
+            label: Text(
+              isBookmarked ? 'Hapus dari favorit' : 'Tambahkan ke favorit',
+            ),
+          ),
+          const SizedBox(height: AppSpacing.medium),
           const FilledButton(onPressed: null, child: Text('Baca selengkapnya')),
           const SizedBox(height: AppSpacing.small),
           Text(

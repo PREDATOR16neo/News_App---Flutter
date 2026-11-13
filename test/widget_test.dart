@@ -128,6 +128,43 @@ void main() {
     );
     expect(find.text('Deskripsi tidak tersedia'), findsOneWidget);
   });
+
+  testWidgets('bookmark tersinkron antara Beranda, Detail, dan Favorit', (
+    tester,
+  ) async {
+    const article = Article(
+      title: 'Berita untuk disimpan',
+      sourceName: 'Kabar Nusantara',
+    );
+    await tester.pumpWidget(
+      MyApp(newsService: _SingleArticleNewsService(article)),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Tambahkan ke favorit'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Favorit'));
+    await tester.pumpAndSettle();
+
+    expect(find.text(article.title), findsOneWidget);
+    await tester.tap(find.text(article.title));
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(
+      find.text('Hapus dari favorit'),
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
+    expect(find.text('Hapus dari favorit'), findsOneWidget);
+
+    await tester.tap(find.text('Hapus dari favorit'));
+    await tester.pumpAndSettle();
+    expect(find.text('Tambahkan ke favorit'), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.text('Belum ada berita favorit.'), findsOneWidget);
+  });
 }
 
 class _SingleArticleNewsService implements NewsService {
