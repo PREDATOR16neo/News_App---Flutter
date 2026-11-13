@@ -28,19 +28,19 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.tap(find.widgetWithText(ChoiceChip, 'Bisnis'));
-    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pumpAndSettle();
     expect(find.text('Berita pasar lokal'), findsOneWidget);
     expect(find.text('Berita teknologi'), findsNothing);
 
     await tester.tap(find.widgetWithText(ChoiceChip, 'Semua'));
-    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), 'tenis');
-    await tester.pump();
+    await tester.pumpAndSettle();
     expect(find.text('Turnamen tenis'), findsOneWidget);
     expect(find.text('Berita pasar lokal'), findsNothing);
 
     await tester.enterText(find.byType(TextField), 'tidak ada');
-    await tester.pump();
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Hapus filter'));
     await tester.pump();
     expect(
@@ -156,6 +156,28 @@ void main() {
     expect(find.text('Deskripsi tidak tersedia'), findsOneWidget);
   });
 
+  testWidgets('memberi pesan saat tautan artikel tidak tersedia', (
+    tester,
+  ) async {
+    const article = Article(title: 'Berita tanpa tautan');
+    await tester.pumpWidget(
+      MyApp(newsService: _SingleArticleNewsService(article)),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(article.title));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Baca selengkapnya'),
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.tap(find.text('Baca selengkapnya'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Tautan artikel tidak tersedia.'), findsOneWidget);
+  });
+
   testWidgets('bookmark tersinkron antara Beranda, Detail, dan Favorit', (
     tester,
   ) async {
@@ -200,14 +222,24 @@ class _SingleArticleNewsService implements NewsService {
   final Article article;
 
   @override
-  Future<List<Article>> fetchArticles() async => [article];
+  Future<List<Article>> fetchArticles({
+    String? query,
+    String? category,
+  }) async => [article];
 }
 
 class _CategorizedNewsService implements NewsService {
-  @override
-  Future<List<Article>> fetchArticles() async => const [
+  static const _articles = [
     Article(title: 'Berita teknologi', category: 'Teknologi'),
     Article(title: 'Berita pasar lokal', category: 'Bisnis'),
     Article(title: 'Turnamen tenis', category: 'Olahraga'),
   ];
+
+  @override
+  Future<List<Article>> fetchArticles({String? query, String? category}) =>
+      Future.value(
+        _articles.where((article) {
+          return category == null || article.category == category;
+        }).toList(),
+      );
 }

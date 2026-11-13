@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/article.dart';
 import '../providers/bookmark_provider.dart';
@@ -54,11 +55,21 @@ class DetailScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.medium),
-          const FilledButton(onPressed: null, child: Text('Baca selengkapnya')),
-          const SizedBox(height: AppSpacing.small),
-          Text(
-            'Tautan akan tersedia pada tahap integrasi API.',
-            style: Theme.of(context).textTheme.bodyMedium,
+          FilledButton(
+            onPressed: () async {
+              final url = article.url;
+              if (url != null && url.isNotEmpty) {
+                // Tunggu proses pembukaan tautan selesai.
+                await bukaArtikel(context, url);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Tautan artikel tidak tersedia.'),
+                  ),
+                );
+              }
+            },
+            child: const Text('Baca selengkapnya'),
           ),
         ],
       ),
@@ -98,6 +109,18 @@ class DetailScreen extends StatelessWidget {
           semanticLabel: 'Gambar tidak tersedia',
         ),
       ),
+    );
+  }
+}
+
+Future<void> bukaArtikel(BuildContext context, String url) async {
+  final berhasil = await launchUrl(
+    Uri.parse(url),
+    mode: LaunchMode.externalApplication,
+  );
+  if (!berhasil && context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Tidak bisa membuka tautan artikel.')),
     );
   }
 }

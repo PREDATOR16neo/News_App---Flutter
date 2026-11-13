@@ -28,6 +28,15 @@ void main() {
     expect(await service.fetchArticles(), isEmpty);
   });
 
+  test('memfilter artikel contoh berdasarkan kategori', () async {
+    final service = MockNewsService(delay: Duration.zero);
+
+    final articles = await service.fetchArticles(category: 'Bisnis');
+
+    expect(articles, hasLength(1));
+    expect(articles.single.category, 'Bisnis');
+  });
+
   test('melempar error saat mode error', () async {
     final service = MockNewsService(
       responseMode: MockResponseMode.error,

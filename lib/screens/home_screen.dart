@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: AppSpacing.medium),
             FilledButton(
-              onPressed: provider.loadArticles,
+              onPressed: provider.reloadArticles,
               child: const Text('Coba lagi'),
             ),
           ],
@@ -109,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: AppSpacing.medium),
             FilledButton(
-              onPressed: provider.loadArticles,
+              onPressed: provider.reloadArticles,
               child: const Text('Muat ulang'),
             ),
           ],
@@ -121,20 +121,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildArticleList(NewsProvider provider) {
     final query = _searchQuery.trim().toLowerCase();
     final articles = provider.articles.where((article) {
-      final matchesCategory =
-          _selectedCategory == 'Semua' ||
-          article.category?.toLowerCase() == _selectedCategory.toLowerCase();
       final searchableText = [
         article.title,
         article.description ?? '',
         article.sourceName ?? '',
         article.author ?? '',
       ].join(' ').toLowerCase();
-      return matchesCategory && searchableText.contains(query);
+      return searchableText.contains(query);
     }).toList();
 
     return RefreshIndicator(
-      onRefresh: provider.loadArticles,
+      onRefresh: provider.reloadArticles,
       child: ListView(
         padding: const EdgeInsets.all(AppSpacing.medium),
         physics: const AlwaysScrollableScrollPhysics(),
@@ -160,9 +157,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: ChoiceChip(
                     label: Text(category),
                     selected: _selectedCategory == category,
-                    onSelected: (_) => setState(() {
-                      _selectedCategory = category;
-                    }),
+                    onSelected: (_) {
+                      setState(() {
+                        _selectedCategory = category;
+                      });
+                      unawaited(
+                        context.read<NewsProvider>().loadArticles(
+                          query: _searchQuery.trim().isEmpty
+                              ? null
+                              : _searchQuery.trim(),
+                          category: category == 'Semua' ? null : category,
+                        ),
+                      );
+                    },
                   ),
                 );
               }).toList(),
@@ -218,6 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _searchQuery = '';
                 _selectedCategory = 'Semua';
               });
+              unawaited(context.read<NewsProvider>().loadArticles());
             },
             child: const Text('Hapus filter'),
           ),

@@ -17,7 +17,7 @@ class MockNewsService implements NewsService {
   final Duration delay;
 
   @override
-  Future<List<Article>> fetchArticles() async {
+  Future<List<Article>> fetchArticles({String? query, String? category}) async {
     // Simulasikan waktu tunggu agar state loading dapat diuji.
     await Future<void>.delayed(delay);
 
@@ -41,11 +41,28 @@ class MockNewsService implements NewsService {
       throw const FormatException('Field "articles" harus berupa daftar.');
     }
 
-    return articlesJson.map((articleJson) {
+    final articles = articlesJson.map((articleJson) {
       if (articleJson is! Map<String, dynamic>) {
         throw const FormatException('Setiap berita harus berupa objek JSON.');
       }
       return Article.fromJson(articleJson);
+    }).toList();
+
+    return articles.where((article) {
+      final matchesCategory =
+          category == null ||
+          article.category?.toLowerCase() == category.toLowerCase();
+      final searchableText = [
+        article.title,
+        article.description ?? '',
+        article.sourceName ?? '',
+        article.author ?? '',
+      ].join(' ').toLowerCase();
+      final matchesQuery =
+          query == null ||
+          query.trim().isEmpty ||
+          searchableText.contains(query.trim().toLowerCase());
+      return matchesCategory && matchesQuery;
     }).toList();
   }
 }

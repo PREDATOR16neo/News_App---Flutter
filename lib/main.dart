@@ -1,16 +1,16 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:news_app/services/api_news_service.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/bookmark_provider.dart';
 import 'providers/news_provider.dart';
 import 'screens/bookmark_screen.dart';
 import 'screens/home_screen.dart';
-import 'services/mock_news_service.dart';
 import 'services/news_service.dart';
 import 'theme/app_theme.dart';
 
 void main() {
-  runApp(MyApp(newsService: MockNewsService()));
+  runApp(MyApp(newsService: ApiNewsService()));
 }
 
 class MyApp extends StatelessWidget {
